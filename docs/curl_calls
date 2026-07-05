@@ -1,0 +1,12 @@
+curl "http://localhost:8080/debug/latest?host=STIJN-PC"
+
+curl http://localhost:8080/debug/hosts
+
+curl "http://localhost:8080/debug/dump?limit=50"
+
+
+curl http://localhost:8080/stats
+curl "http://localhost:8080/stats?host=STIJN-PC"
+curl http://localhost:8080/debug/latest?host=STIJN-PC
+curl http://localhost:8080/debug/dump?limit=10
+curl "http://localhost:8080/metrics?host=STIJN-PC&limit=20"

@@ -1,0 +1,19 @@
+# Go
+server/pulse-server
+
+# React
+frontend/pulse-dashboard/node_modules/
+frontend/pulse-dashboard/dist/
+
+# SQLite
+server/metrics.db
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

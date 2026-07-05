@@ -1,0 +1,54 @@
+SELECT *
+FROM metrics m
+WHERE hostname = 'STIJN-PC'
+AND timestamp > (
+    SELECT MAX(timestamp) FROM metrics WHERE hostname = 'STIJN-PC'
+) - 600;
+
+
+
+SELECT timestamp FROM metrics
+WHERE hostname = 'STIJN-PC'
+ORDER BY timestamp DESC;
+
+SELECT *
+FROM metrics
+WHERE hostname = 'STIJN-PC'
+AND timestamp > (SELECT MAX(timestamp) - 20 FROM metrics);
+
+SELECT COUNT(*)
+FROM metrics
+WHERE hostname = 'STIJN-PC';
+
+
+SELECT *
+FROM metrics
+WHERE hostname = 'STIJN-PC'
+AND timestamp > strftime('%s','now') - 600;
+
+
+SELECT
+  MIN(cpu) AS min_cpu,
+  MAX(cpu) AS max_cpu
+FROM metrics
+WHERE hostname = 'STIJN-PC';
+
+
+SELECT AVG(cpu), AVG(ram)
+FROM metrics
+WHERE hostname = 'STIJN-PC';
+
+
+SELECT * FROM metrics
+WHERE hostname = 'STIJN-PC'
+ORDER BY timestamp DESC
+LIMIT 1;
+
+
+SELECT * FROM metrics
+WHERE hostname = 'STIJN-PC';
+//
+WHERE hostname = 'RaikariLinux'
+
+
+

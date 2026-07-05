@@ -1,0 +1,26 @@
+BUILDS
+
+server: go build
+
+linux agent: g++ main.cpp -o pulse-agent -lcurl -std=c++17
+
+windows ageint: g++ main.cpp metrics.cpp network.cpp -o pulse-agent.exe -lcurl -lws2_32 -lwinpthread
+
+-----------------------------------------
+
+RUN
+
+server: ./pulse-server
+
+linux agent: ./pulse-agent
+
+windows agent: ./pulse-agent.ext
+
+-----------------------------------------
+
+DataBase
+
+sqlite3 metrics.db
+.tables
+SELECT * FROM metrics;
+.quit
