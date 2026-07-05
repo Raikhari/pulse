@@ -22,7 +22,8 @@ export default function App() {
 
 		const formatted = metrics.map(m => ({
 			...m,
-			time: new Date(m.timestamp * 1000).toLocaleTimeString(),
+			date: new Date(m.timestamp * 1000),
+			timestamp: m.timestamp,
 		}));
 
 		setData(formatted);
