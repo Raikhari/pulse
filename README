@@ -1,0 +1,25 @@
+# Pulse
+
+A lightweight monitoring platform built from scratch.
+
+## Components
+
+- C++ metrics agent
+- Go REST API
+- SQLite storage
+- React dashboard
+
+## Features
+
+- Live CPU/RAM graphs
+- Historical metrics
+- Multi-host support
+- REST API
+
+## Roadmap
+
+- [x] SQLite storage
+- [x] React dashboard
+- [ ] Time range selector
+- [ ] Process monitoring
+- [ ] Docker deployment
