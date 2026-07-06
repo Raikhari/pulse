@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
+	"strings"
 )
 
 //METRICS
@@ -250,6 +253,7 @@ func debugDumpHandler(w http.ResponseWriter, r *http.Request) {
 func metricsQueryHandler(w http.ResponseWriter, r *http.Request) {
 	host := r.URL.Query().Get("host")
 	limit := r.URL.Query().Get("limit")
+	hours := r.URL.Query().Get("hours")
 
 	if limit == "" {
 		limit = "100"
@@ -261,10 +265,24 @@ func metricsQueryHandler(w http.ResponseWriter, r *http.Request) {
 	`
 
 	var args []any
+	var conditions []string
 
 	if host != "" {
-		query += " WHERE hostname = ?"
+		conditions = append(conditions, "hostname = ?")
 		args = append(args, host)
+	}
+
+	if hours != "" {
+		h, err := strconv.Atoi(hours)
+		if err == nil {
+			since := time.Now().Unix() - int64(h*3600)
+			conditions = append(conditions, "timestamp >= ?")
+			args = append(args, since)
+		}
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
 	}
 
 	query += " ORDER BY timestamp DESC LIMIT ?"
