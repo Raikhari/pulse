@@ -5,6 +5,8 @@ import heroImg from './assets/hero.png'
 import './App.css'
 import CpuChart from "./components/charts/CpuChart";
 import RamChart from "./components/charts/RamChart";
+import LoadChart from "./components/charts/LoadChart";
+import UptimeChart from "./components/charts/UptimeChart";
 import HostSelector from "./components/controls/HostSelector";
 import StatCard from "./components/cards/StatCard";
 import { fetchMetrics, fetchHosts, fetchStats } from "./api/metrics";
@@ -14,14 +16,16 @@ export default function App() {
 	const [host, setHost] = useState("");
 	const [data, setData] = useState([]);
 	const [stats, setStats] = useState(null);
+	const [hours, setHours] = useState(24);
 
 	async function load() {
 		if (!host) return;
 
-		const metrics = await fetchMetrics(host);
+		const metrics = await fetchMetrics(host, hours);
 
 		const formatted = metrics.map(m => ({
 			...m,
+			uptimeHours: m.uptime/3600,
 			date: new Date(m.timestamp * 1000),
 			timestamp: m.timestamp,
 		}));
@@ -43,7 +47,7 @@ export default function App() {
 		load();
 		const interval = setInterval(load, 5000);
 		return () => clearInterval(interval);
-	}, [host]);
+	}, [host, hours]);
 
 	return (
 		<div style={{ padding: 20 }}>
@@ -56,6 +60,10 @@ export default function App() {
 		onChange={setHost}
 		/>
 		</header>
+		<button onClick={() => setHours(1)}>1 Hour</button>
+		<button onClick={() => setHours(6)}>6 Hours</button>
+		<button onClick={() => setHours(24)}>24 Hours</button>
+		<button onClick={() => setHours(168)}>7 Days</button>
 		<div className="stats-row">
 
 		<StatCard
@@ -83,6 +91,7 @@ export default function App() {
 		/>
 		</div>
 		<div className="grid">
+		
 		<div className="card">
 		<h2>CPU</h2>
 		<CpuChart data={data} />
@@ -92,6 +101,17 @@ export default function App() {
 		<h2>RAM</h2>
 		<RamChart data={data} />
 		</div>
+
+		<div className="card">
+		<h2>Load</h2>
+		<LoadChart data={data} />
+		</div>
+
+		<div className="card">
+                <h2>uptime</h2>
+                <UptimeChart data={data} />
+                </div>
+
 		</div>
 		</div>
 		</div>

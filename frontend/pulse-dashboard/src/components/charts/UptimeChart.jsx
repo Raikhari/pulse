@@ -1,13 +1,13 @@
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
+	LineChart,
+	Line,
+	XAxis,
+	YAxis,
+	Tooltip,
+	ResponsiveContainer,
 } from "recharts";
 
-export default function LoadChart({ data }) {
+export default function UptimeChart({ data }) {
 	return (
 		<ResponsiveContainer width="100%" height={300}>
 		<LineChart data={data}>
@@ -20,9 +20,11 @@ export default function LoadChart({ data }) {
 			})
 		}
 		/>
-		<YAxis />
+		<YAxis 
+		tickFormatter={(v) => `${Math.round(v)}h`}
+		/>
 		<Tooltip />
-		<Line type="monotone" dataKey="load1" stroke="#3b82f6" />
+		<Line type="monotone" dataKey="uptimeHours" stroke="#a855f7" />
 		</LineChart>
 		</ResponsiveContainer>
 	);

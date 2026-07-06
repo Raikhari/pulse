@@ -1,7 +1,7 @@
 const BASE_URL = "http://localhost:8080";
 
-export async function fetchMetrics(host) {
-	const res = await fetch(`${BASE_URL}/metrics?host=${host}&limit=200`);
+export async function fetchMetrics(host, hours = 24) {
+	const res = await fetch(`${BASE_URL}/metrics?host=${host}&limit=200&hours=${hours}`);
 	return res.json();
 }
 
