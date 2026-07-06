@@ -17,3 +17,11 @@ export async function fetchStats(host) {
 
 	return await res.json();
 }
+
+export async function fetchEvents(host, hours = 24) {
+    const res = await fetch(
+        `http://localhost:8080/events?host=${host}&hours=${hours}`
+    );
+
+    return await res.json();
+}

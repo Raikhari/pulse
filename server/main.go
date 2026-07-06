@@ -36,6 +36,9 @@ func main() {
 	http.HandleFunc("/debug/latest", enableCORS(debugLatestHandler))
 	http.HandleFunc("/debug/dump", enableCORS(debugDumpHandler))
 
+	//Events
+	http.HandleFunc("/events", eventsHandler)
+
 	//GET for time series based queries
 //	http.HandleFunc("/metrics", metricsQueryHandler)
 

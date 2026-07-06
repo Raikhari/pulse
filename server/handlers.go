@@ -306,3 +306,46 @@ func metricsQueryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)
 }
+
+func eventsHandler(w http.ResponseWriter, r *http.Request) {
+
+	host := r.URL.Query().Get("host")
+
+	if host == "" {
+		http.Error(w, "host required", http.StatusBadRequest)
+		return
+	}
+
+	rows, err := db.Query(`
+	SELECT hostname, cpu, ram, uptime, load1, timestamp
+	FROM metrics
+	WHERE hostname = ?
+	ORDER BY timestamp ASC
+	`, host)
+
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	defer rows.Close()
+
+	var metrics []Metrics
+
+	for rows.Next() {
+		var m Metrics
+		rows.Scan(
+			&m.Hostname,
+			&m.CPU,
+			&m.RAM,
+			&m.Uptime,
+			&m.Load1,
+			&m.Timestamp,
+		)
+		metrics = append(metrics, m)
+	}
+
+	events := GenerateEvents(metrics)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(events)
+}
