@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 import CpuChart from "./components/charts/CpuChart";
 import RamChart from "./components/charts/RamChart";
 import LoadChart from "./components/charts/LoadChart";
-import UptimeChart from "./components/charts/UptimeChart";
 import HostSelector from "./components/controls/HostSelector";
 import StatCard from "./components/cards/StatCard";
 import EventTimeline from "./components/timeline/EventTimeline";
