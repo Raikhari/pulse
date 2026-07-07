@@ -25,3 +25,15 @@ export async function fetchEvents(host, hours = 24) {
 
     return await res.json();
 }
+
+export async function fetchLatest(host) {
+    const response = await fetch(
+        `http://localhost:8080/metrics/latest?host=${encodeURIComponent(host)}`
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch latest metrics");
+    }
+
+    return response.json();
+}

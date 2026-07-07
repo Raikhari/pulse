@@ -10,7 +10,14 @@ import UptimeChart from "./components/charts/UptimeChart";
 import HostSelector from "./components/controls/HostSelector";
 import StatCard from "./components/cards/StatCard";
 import EventTimeline from "./components/timeline/EventTimeline";
-import { fetchMetrics, fetchHosts, fetchStats, fetchEvents } from "./api/metrics";
+import HostStatusCard from "./components/cards/HostStatusCard";
+import { 
+	fetchMetrics, 
+	fetchHosts, 
+	fetchStats, 
+	fetchEvents,
+	fetchLatest,
+} from "./api/metrics";
 
 export default function App() {
 	const [hosts, setHosts] = useState([]);
@@ -19,6 +26,7 @@ export default function App() {
 	const [stats, setStats] = useState(null);
 	const [hours, setHours] = useState(24);
 	const [events, setEvents] = useState([]);
+	const [latest, setLatest] = useState(null);
 
 	async function load() {
 		if (!host) return;
@@ -41,6 +49,9 @@ export default function App() {
 		console.log("EVENT DATA:", eventData);
 		console.log("EVENT COUNT:", eventData.length);
 		setEvents(eventData);
+
+		const latestData = await fetchLatest(host);
+		setLatest(latestData);
 	}
 
 	useEffect(() => {
@@ -67,6 +78,11 @@ export default function App() {
 		onChange={setHost}
 		/>
 		</header>
+		
+		<HostStatusCard latest={latest} />
+
+		<div className="stats-grid">
+
 		<button onClick={() => setHours(1)}>1 Hour</button>
 		<button onClick={() => setHours(6)}>6 Hours</button>
 		<button onClick={() => setHours(24)}>24 Hours</button>
@@ -96,6 +112,7 @@ export default function App() {
 		value={stats ? stats.samples : "--"}
 		unit=""
 		/>
+		</div>
 		</div>
 		<div className="grid">
 
