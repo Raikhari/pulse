@@ -310,18 +310,35 @@ func metricsQueryHandler(w http.ResponseWriter, r *http.Request) {
 func eventsHandler(w http.ResponseWriter, r *http.Request) {
 
 	host := r.URL.Query().Get("host")
+	hoursStr := r.URL.Query().Get("hours")
 
 	if host == "" {
 		http.Error(w, "host required", http.StatusBadRequest)
 		return
 	}
 
-	rows, err := db.Query(`
+	query := `
 	SELECT hostname, cpu, ram, uptime, load1, timestamp
 	FROM metrics
 	WHERE hostname = ?
-	ORDER BY timestamp ASC
-	`, host)
+	`
+
+	var args []any
+	args = append(args, host)
+
+	if hoursStr != "" {
+		hours, err := strconv.Atoi(hoursStr)
+		if err == nil && hours > 0 {
+			since := time.Now().Unix() - int64(hours*3600)
+			query += " AND timestamp >= ?"
+			args = append(args, since)
+		}
+	}
+
+	query += " ORDER BY timestamp ASC"
+
+
+	rows, err := db.Query(query, args...)
 
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -345,6 +362,10 @@ func eventsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	events := GenerateEvents(metrics)
+
+	for i, j := 0, len(events)-1; i < j; i, j = i+1, j-1 {
+		events[i], events[j] = events[j], events[i]
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(events)

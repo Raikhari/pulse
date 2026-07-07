@@ -9,7 +9,8 @@ import LoadChart from "./components/charts/LoadChart";
 import UptimeChart from "./components/charts/UptimeChart";
 import HostSelector from "./components/controls/HostSelector";
 import StatCard from "./components/cards/StatCard";
-import { fetchMetrics, fetchHosts, fetchStats } from "./api/metrics";
+import EventTimeline from "./components/timeline/EventTimeline";
+import { fetchMetrics, fetchHosts, fetchStats, fetchEvents } from "./api/metrics";
 
 export default function App() {
 	const [hosts, setHosts] = useState([]);
@@ -17,6 +18,7 @@ export default function App() {
 	const [data, setData] = useState([]);
 	const [stats, setStats] = useState(null);
 	const [hours, setHours] = useState(24);
+	const [events, setEvents] = useState([]);
 
 	async function load() {
 		if (!host) return;
@@ -34,6 +36,11 @@ export default function App() {
 
 		const statData = await fetchStats(host);
 		setStats(statData);
+
+		const eventData = await fetchEvents(host, hours);
+		console.log("EVENT DATA:", eventData);
+		console.log("EVENT COUNT:", eventData.length);
+		setEvents(eventData);
 	}
 
 	useEffect(() => {
@@ -91,7 +98,7 @@ export default function App() {
 		/>
 		</div>
 		<div className="grid">
-		
+
 		<div className="card">
 		<h2>CPU</h2>
 		<CpuChart data={data} />
@@ -107,12 +114,8 @@ export default function App() {
 		<LoadChart data={data} />
 		</div>
 
-		<div className="card">
-                <h2>uptime</h2>
-                <UptimeChart data={data} />
-                </div>
-
 		</div>
+		<EventTimeline events={events} />
 		</div>
 		</div>
 
