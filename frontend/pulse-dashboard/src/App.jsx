@@ -74,15 +74,42 @@ export default function App() {
 		onChange={setHost}
 		/>
 		</header>
-		
+
 		<HostStatusCard latest={latest} />
 
 		<div className="stats-grid">
 
-		<button onClick={() => setHours(1)}>1 Hour</button>
-		<button onClick={() => setHours(6)}>6 Hours</button>
-		<button onClick={() => setHours(24)}>24 Hours</button>
-		<button onClick={() => setHours(168)}>7 Days</button>
+		<div className="range-selector">
+		<button
+		className={hours === 1 ? "active" : ""}
+		onClick={() => setHours(1)}
+		>
+		1h
+		</button>
+
+		<button
+		className={hours === 6 ? "active" : ""}
+		onClick={() => setHours(6)}
+		>
+		6h
+		</button>
+
+		<button
+		className={hours === 24 ? "active" : ""}
+		onClick={() => setHours(24)}
+		>
+		24h
+		</button>
+
+		<button
+		className={hours === 168 ? "active" : ""}
+		onClick={() => setHours(168)}
+		>
+		7d
+		</button>
+		</div>
+
+
 		<div className="stats-row">
 
 		<StatCard

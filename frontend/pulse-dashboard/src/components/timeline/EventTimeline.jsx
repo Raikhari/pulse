@@ -26,6 +26,8 @@ function eventIcon(type) {
 }
 
 export default function EventTimeline({ events }) {
+	const visibleEvents = events ? events.slice(0, 10) : [];
+	
 	if (!events || events.length === 0) {
 		return (
 			<div className="card">
@@ -35,12 +37,18 @@ export default function EventTimeline({ events }) {
 		);
 	}
 
+
 	return (
 		<div className="card">
-		<h2>Recent Events ({events.length})</h2>
+		<h2>
+		Recent Events
+		<span className="timeline-count">
+		Showing {visibleEvents.length} of {events.length}
+		</span>
+		</h2>
 
 		<div className="timeline">
-		{events.slice(0, 10).map((event, index) => (
+		{visibleEvents.map((event, index) => (
 			<div 
 			className={`timeline-item timeline-${event.type}`}
 			key={`${event.timestamp}-${event.type}-${index}`}

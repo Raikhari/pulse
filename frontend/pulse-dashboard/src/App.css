@@ -235,3 +235,93 @@
 .timeline-ram_normal {
     border-left-color: #22c55e;
 }
+
+.timeline-count {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.6;
+}
+
+.host-status-card {
+    padding: 20px 24px;
+}
+
+.host-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.host-status-header h2 {
+    margin: 0;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.host-status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.host-status-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.host-label {
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+.host-status-grid strong {
+    font-size: 1.05rem;
+}
+
+.host-exact-time {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.75rem;
+    opacity: 0.5;
+}
+
+.range-selector {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    margin: 18px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+}
+
+.range-selector button {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.range-selector button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+.range-selector button.active {
+    background: #3b82f6;
+    color: white;
+}
