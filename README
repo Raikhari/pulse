@@ -1,25 +1,214 @@
 # Pulse
 
-A lightweight monitoring platform built from scratch.
+Pulse is a lightweight, agent-driven system monitoring project built as a hobby project to explore telemetry collection, persistent metrics storage, event detection, and dashboard visualization.
 
-## Components
+The project consists of:
 
-- C++ metrics agent
-- Go REST API
-- SQLite storage
-- React dashboard
+- A Go backend API
+- Lightweight monitoring agents
+- SQLite persistent storage
+- A React dashboard built with Vite
+- Recharts-based metric visualization
+- A derived event detection system
+
+## Current Status
+
+Pulse is under active development.
+
+The current version supports multi-host metric collection, persistent historical storage, time-range filtering, live dashboard visualization, host health status, and derived system events.
 
 ## Features
 
-- Live CPU/RAM graphs
+### Metric Collection
+
+Pulse agents report:
+
+- CPU usage
+- RAM usage
+- Load average
+- System uptime
+- Hostname
+- Timestamp
+
+Metrics are pushed from agents to the Pulse server and stored persistently in SQLite.
+
+### Multi-Host Monitoring
+
+The dashboard supports multiple reporting hosts.
+
+Users can select a host and inspect its:
+
 - Historical metrics
-- Multi-host support
-- REST API
+- Statistics
+- Recent events
+- Current reporting status
 
-## Roadmap
+### Dashboard
 
-- [x] SQLite storage
-- [x] React dashboard
-- [ ] Time range selector
-- [ ] Process monitoring
-- [ ] Docker deployment
+The React dashboard currently includes:
+
+- Host selector
+- CPU graph
+- RAM graph
+- Load average graph
+- Time-range selection
+  - 1 hour
+  - 6 hours
+  - 24 hours
+  - 7 days
+- Dynamic statistics cards
+- Current host status
+- Last-seen information
+- Current uptime
+- Latest CPU and RAM values
+- Recent event timeline
+
+### Event Detection
+
+Pulse derives events from historical telemetry.
+
+Currently supported events:
+
+- System reboot detected
+- High CPU usage detected
+- CPU usage returned to normal
+- High RAM usage detected
+- RAM usage returned to normal
+
+Threshold events use state transitions to avoid generating repeated alerts for every metric sample.
+
+Hysteresis is used to reduce event flapping around alert thresholds.
+
+### Host Status
+
+Pulse derives reporting health from the timestamp of the latest received metric.
+
+Current states include:
+
+- Reporting
+- Delayed
+- Not reporting
+- Unknown
+
+This represents telemetry/reporting health and does not necessarily mean the physical machine is offline.
+
+## Architecture
+
+```text
+Monitoring Agent
+      |
+      | HTTP / JSON
+      v
+Go Backend API
+      |
+      v
+SQLite Database
+      |
+      +------------------+
+      |                  |
+      v                  v
+Metrics API         Event Derivation
+      |                  |
+      +--------+---------+
+               |
+               v
+        React Dashboard
+
+### Tech Stack
+### Backend
+- Go
+- net/http
+- SQLite
+- JSON API
+
+### Frontend
+- React
+- Vite
+- Recharts
+- JavaScript
+- CSS
+
+### API endpoints
+/metrics
+/metrics/latest
+/stats
+/events
+
+### Examples
+curl "http://localhost:8080/metrics?host=RaikariLinux&hours=24"
+curl "http://localhost:8080/events?host=RaikariLinux&hours=168"
+curl "http://localhost:8080/metrics/latest?host=RaikariLinux"
+
+## Event Flow
+CPU normal
+    |
+    v
+CPU crosses high threshold
+    |
+    v
+High CPU event
+    |
+    v
+CPU remains high
+(no repeated events)
+    |
+    v
+CPU crosses recovery threshold
+    |
+    v
+CPU normal event
+
+### Project Structure
+pulse/
+├── server/
+│   ├── main.go
+│   ├── handlers.go
+│   ├── events.go
+│   └── ...
+├── frontend/
+│   └── pulse-dashboard/
+│       └── src/
+│           ├── api/
+│           ├── assets/
+│           ├── components/
+│           │   ├── cards/
+│           │   ├── charts/
+│           │   ├── controls/
+│           │   └── timeline/
+│           ├── App.jsx
+│           └── App.css
+└── ...
+
+### ROADMAP
+[]Expandable event timeline with "Show more"
+[]Configurable alert thresholds
+[]Improved host health visualization
+[]Process monitoring
+[]Top CPU-consuming processes
+[]Top RAM-consuming processes
+[]Correlation between process activity and metric spikes
+[]Disk usage monitoring
+[]Network throughput monitoring
+[]Persistent event storage
+[]Docker support
+[]Production deployment
+[]HTTPS
+[]Authentication
+[]Improved API structure and configuration
+
+### Development Nodes
+Pulse is currently a hobby and learning project.
+
+The project is being developed incrementally, with an emphasis on:
+
+- Clear separation between backend, frontend, and agent responsibilities
+- Small testable features
+- Persistent telemetry
+- Derived monitoring events
+- Practical visualization
+- Avoiding unnecessary complexity too early
+
+### License
+License not yet specified.
+
+

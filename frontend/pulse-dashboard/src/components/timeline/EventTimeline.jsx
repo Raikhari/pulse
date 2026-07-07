@@ -37,10 +37,10 @@ export default function EventTimeline({ events }) {
 
 	return (
 		<div className="card">
-		<h2>Recent Events</h2>
+		<h2>Recent Events ({events.length})</h2>
 
 		<div className="timeline">
-		{events.map((event, index) => (
+		{events.slice(0, 10).map((event, index) => (
 			<div 
 			className={`timeline-item timeline-${event.type}`}
 			key={`${event.timestamp}-${event.type}-${index}`}
