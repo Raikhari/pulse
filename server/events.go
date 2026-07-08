@@ -15,15 +15,8 @@ func GenerateEvents(metrics []Metrics) []Event {
 		return events
 	}
 
-	cpuHighThreshold := 80.0
-	cpuNormalThreshold := 70.0
-
-	highCPU := metrics[0].CPU > cpuHighThreshold
-
-	ramHighThreshold := 85.0
-	ramNormalThreshold := 75.0
-
-	highRAM := metrics[0].RAM > ramHighThreshold
+	highCPU := metrics[0].CPU > eventConfig.CPUHighThreshold
+	highRAM := metrics[0].RAM > eventConfig.RAMHighThreshold
 
 	for i := 1; i < len(metrics); i++ {
 
@@ -41,7 +34,7 @@ func GenerateEvents(metrics []Metrics) []Event {
 		}
 
 		// Entering high CPU state
-		if curr.CPU > cpuHighThreshold && !highCPU {
+		if curr.CPU > eventConfig.CPUHighThreshold && !highCPU {
 			events = append(events, Event{
 				Timestamp: curr.Timestamp,
 				Hostname:  curr.Hostname,
@@ -53,7 +46,7 @@ func GenerateEvents(metrics []Metrics) []Event {
 		}
 
 		// Leaving high CPU state
-		if curr.CPU < cpuNormalThreshold && highCPU {
+		if curr.CPU < eventConfig.CPUNormalThreshold && highCPU {
 			events = append(events, Event{
 				Timestamp: curr.Timestamp,
 				Hostname:  curr.Hostname,
@@ -65,7 +58,7 @@ func GenerateEvents(metrics []Metrics) []Event {
 
 
 		// Entering high RAM state
-		if curr.RAM > ramHighThreshold && !highRAM {
+		if curr.RAM > eventConfig.RAMHighThreshold && !highRAM {
 			events = append(events, Event{
 				Timestamp: curr.Timestamp,
 				Hostname:  curr.Hostname,
@@ -75,8 +68,8 @@ func GenerateEvents(metrics []Metrics) []Event {
 			highRAM = true
 		}
 
-		// Leaving high CPU state
-		if curr.RAM < ramNormalThreshold && highRAM {
+		// Leaving high RAM state
+		if curr.RAM < eventConfig.RAMNormalThreshold && highRAM {
 			events = append(events, Event{
 				Timestamp: curr.Timestamp,
 				Hostname:  curr.Hostname,

@@ -47,6 +47,7 @@ export default function App() {
 		setEvents(eventData);
 
 		const latestData = await fetchLatest(host);
+		console.log("LATEST:", latestData);
 		setLatest(latestData);
 	}
 
