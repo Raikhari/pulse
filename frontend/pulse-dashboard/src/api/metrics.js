@@ -43,3 +43,30 @@ export async function fetchLatest(host) {
 
 	return response.json();
 }
+
+export async function fetchConfig() {
+    const response = await fetch(`${BASE_URL}/config`);
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch config");
+    }
+
+    return response.json();
+}
+
+export async function saveConfig(config) {
+    const response = await fetch(`${BASE_URL}/config`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(config),
+    });
+
+    if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Failed to save config");
+    }
+
+    return response.json();
+}

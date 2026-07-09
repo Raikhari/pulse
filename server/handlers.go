@@ -410,11 +410,20 @@ func configHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// update in-memory config
 		eventConfig.CPUHighThreshold = newConfig.CPUHighThreshold
 		eventConfig.CPUNormalThreshold = newConfig.CPUNormalThreshold
 		eventConfig.RAMHighThreshold = newConfig.RAMHighThreshold
 		eventConfig.RAMNormalThreshold = newConfig.RAMNormalThreshold
 
+		//persist to SQLite
+		err = saveEventConfig()
+		if err != nil {
+			http.Error(w, "failed to save config", http.StatusInternalServerError)
+			return
+		}
+
+		// return updated config
 		json.NewEncoder(w).Encode(EventConfigResponse{
 			CPUHighThreshold:   eventConfig.CPUHighThreshold,
 			CPUNormalThreshold: eventConfig.CPUNormalThreshold,

@@ -33,4 +33,73 @@ func initDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	createConfigTable := `
+	CREATE TABLE IF NOT EXISTS config (
+		key TEXT PRIMARY KEY,
+		value REAL
+	);
+	`
+
+	_, err = db.Exec(createConfigTable)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	loadEventConfig()
+}
+
+func loadEventConfig() {
+	rows, err := db.Query(`
+	SELECT key, value
+	FROM config
+	`)
+	if err != nil {
+		log.Println("Config load error:", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var key string
+		var value float64
+
+		err := rows.Scan(&key, &value)
+		if err != nil {
+			continue
+		}
+
+		switch key {
+		case "cpu_high_threshold":
+			eventConfig.CPUHighThreshold = value
+		case "cpu_normal_threshold":
+			eventConfig.CPUNormalThreshold = value
+		case "ram_high_threshold":
+			eventConfig.RAMHighThreshold = value
+		case "ram_normal_threshold":
+			eventConfig.RAMNormalThreshold = value
+		}
+	}
+}
+
+func saveEventConfig() error {
+	values := map[string]float64{
+		"cpu_high_threshold":    eventConfig.CPUHighThreshold,
+		"cpu_normal_threshold": eventConfig.CPUNormalThreshold,
+		"ram_high_threshold":   eventConfig.RAMHighThreshold,
+		"ram_normal_threshold": eventConfig.RAMNormalThreshold,
+	}
+
+	for key, value := range values {
+		_, err := db.Exec(`
+			INSERT OR REPLACE INTO config(key, value)
+			VALUES (?, ?)
+		`, key, value)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

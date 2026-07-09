@@ -7,6 +7,7 @@ import HostSelector from "./components/controls/HostSelector";
 import StatCard from "./components/cards/StatCard";
 import EventTimeline from "./components/timeline/EventTimeline";
 import HostStatusCard from "./components/cards/HostStatusCard";
+import ThresholdSettings from "./components/settings/ThresholdSettings";
 import { 
 	fetchMetrics, 
 	fetchHosts, 
@@ -157,6 +158,7 @@ export default function App() {
 
 		</div>
 		<EventTimeline events={events} />
+		<ThresholdSettings />
 		</div>
 		</div>
 
