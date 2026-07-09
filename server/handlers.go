@@ -372,18 +372,57 @@ func eventsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func configHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(EventConfigResponse{
-		CPUHighThreshold:	eventConfig.CPUHighThreshold,
-		CPUNormalThreshold:	eventConfig.CPUNormalThreshold,
-		RAMHighThreshold:	eventConfig.RAMHighThreshold,
-		RAMNormalThreshold:	eventConfig.RAMNormalThreshold,
-	})
-}
+	switch r.Method {
+	case http.MethodGet:
+		json.NewEncoder(w).Encode(EventConfigResponse{
+			CPUHighThreshold:   eventConfig.CPUHighThreshold,
+			CPUNormalThreshold: eventConfig.CPUNormalThreshold,
+			RAMHighThreshold:   eventConfig.RAMHighThreshold,
+			RAMNormalThreshold: eventConfig.RAMNormalThreshold,
+		})
 
+	case http.MethodPost:
+		var newConfig EventConfigResponse
+
+		err := json.NewDecoder(r.Body).Decode(&newConfig)
+		if err != nil {
+			http.Error(w, "invalid json", http.StatusBadRequest)
+			return
+		}
+
+		if newConfig.CPUHighThreshold < 0 || newConfig.CPUHighThreshold > 100 ||
+			newConfig.CPUNormalThreshold < 0 || newConfig.CPUNormalThreshold > 100 ||
+			newConfig.RAMHighThreshold < 0 || newConfig.RAMHighThreshold > 100 ||
+			newConfig.RAMNormalThreshold < 0 || newConfig.RAMNormalThreshold > 100 {
+			http.Error(w, "thresholds must be between 0 and 100", http.StatusBadRequest)
+			return
+		}
+
+		if newConfig.CPUNormalThreshold >= newConfig.CPUHighThreshold {
+			http.Error(w, "cpu_normal_threshold must be lower than cpu_high_threshold", http.StatusBadRequest)
+			return
+		}
+
+		if newConfig.RAMNormalThreshold >= newConfig.RAMHighThreshold {
+			http.Error(w, "ram_normal_threshold must be lower than ram_high_threshold", http.StatusBadRequest)
+			return
+		}
+
+		eventConfig.CPUHighThreshold = newConfig.CPUHighThreshold
+		eventConfig.CPUNormalThreshold = newConfig.CPUNormalThreshold
+		eventConfig.RAMHighThreshold = newConfig.RAMHighThreshold
+		eventConfig.RAMNormalThreshold = newConfig.RAMNormalThreshold
+
+		json.NewEncoder(w).Encode(EventConfigResponse{
+			CPUHighThreshold:   eventConfig.CPUHighThreshold,
+			CPUNormalThreshold: eventConfig.CPUNormalThreshold,
+			RAMHighThreshold:   eventConfig.RAMHighThreshold,
+			RAMNormalThreshold: eventConfig.RAMNormalThreshold,
+		})
+
+	default:
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+	}
+}
