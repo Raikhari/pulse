@@ -38,6 +38,7 @@ func main() {
 
 	//Events
 	http.HandleFunc("/events", enableCORS(eventsHandler))
+	http.HandleFunc("/config", enableCORS(configHandler))
 
 	//GET for time series based queries
 //	http.HandleFunc("/metrics", metricsQueryHandler)

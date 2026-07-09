@@ -13,3 +13,10 @@ var eventConfig = EventConfig{
 	RAMHighThreshold:   85.0,
 	RAMNormalThreshold: 75.0,
 }
+
+type EventConfigResponse struct{	
+	CPUHighThreshold    float64 `json:"cpu_high_threshold`	
+	CPUNormalThreshold  float64 `json:"cpu_normal_threshold`
+	RAMHighThreshold    float64 `json:"ram_high_threshold`
+	RAMNormalThreshold  float64 `json:"ram_normal_threshold`
+}

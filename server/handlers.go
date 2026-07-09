@@ -370,3 +370,20 @@ func eventsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(events)
 }
+
+func configHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(EventConfigResponse{
+		CPUHighThreshold:	eventConfig.CPUHighThreshold,
+		CPUNormalThreshold:	eventConfig.CPUNormalThreshold,
+		RAMHighThreshold:	eventConfig.RAMHighThreshold,
+		RAMNormalThreshold:	eventConfig.RAMNormalThreshold,
+	})
+}
+
