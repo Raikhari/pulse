@@ -28,28 +28,54 @@ export default function App() {
 	async function load() {
 		if (!host) return;
 
-		const metrics = await fetchMetrics(host, hours);
+		const results = await Promise.allSettled([
+			fetchMetrics(host, hours),
+			fetchStats(host),
+			fetchEvents(host, hours),
+			fetchLatest(host),
+		]);
 
-		const formatted = metrics.map(m => ({
-			...m,
-			uptimeHours: m.uptime/3600,
-			date: new Date(m.timestamp * 1000),
-			timestamp: m.timestamp,
-		}));
+		const [
+			metricsResult,
+			statsResult,
+			eventsResult,
+			latestResult,
+		] = results;
 
-		setData(formatted);
+		if (metricsResult.status === "fulfilled") {
+			const formatted = metricsResult.value.map((m) => ({
+				...m,
+				uptimeHours: m.uptime / 3600,
+				date: new Date(m.timestamp * 1000),
+				timestamp: m.timestamp,
+			}));
 
-		const statData = await fetchStats(host);
-		setStats(statData);
+			setData(formatted);
+		} else {
+			console.error("Failed to fetch metrics:", metricsResult.reason);
+		}
 
-		const eventData = await fetchEvents(host, hours);
-		console.log("EVENT DATA:", eventData);
-		console.log("EVENT COUNT:", eventData.length);
-		setEvents(eventData);
+		if (statsResult.status === "fulfilled") {
+			setStats(statsResult.value);
+		} else {
+			console.error("Failed to fetch stats:", statsResult.reason);
+		}
 
-		const latestData = await fetchLatest(host);
-		console.log("LATEST:", latestData);
-		setLatest(latestData);
+		if (eventsResult.status === "fulfilled") {
+			const eventData = Array.isArray(eventsResult.value)
+				? eventsResult.value
+				: [];
+
+			setEvents(eventData);
+		} else {
+			console.error("Failed to fetch events:", eventsResult.reason);
+		}
+
+		if (latestResult.status === "fulfilled") {
+			setLatest(latestResult.value);
+		} else {
+			console.error("Failed to fetch latest metric:", latestResult.reason);
+		}
 	}
 
 	useEffect(() => {
